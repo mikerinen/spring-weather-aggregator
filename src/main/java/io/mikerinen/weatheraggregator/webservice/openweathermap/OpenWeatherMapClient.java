@@ -23,7 +23,8 @@ public class OpenWeatherMapClient {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public ResponseEntity<OpenWeatherMapResponse> fetchWeatherData(String location) {
-        return this.restTemplate.getForEntity(WEATHER_API + apiKey, OpenWeatherMapResponse.class, location);
+    ResponseEntity<OpenWeatherMapResponse> fetchWeatherData(String location) {
+        return this.restTemplate.getForEntity(
+                WEATHER_API + apiKey, OpenWeatherMapResponse.class, location);
     }
 }

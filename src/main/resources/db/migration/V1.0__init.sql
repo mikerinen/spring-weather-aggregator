@@ -10,7 +10,7 @@ temperature_max                 DOUBLE(17),
 temperature_min                 DOUBLE(17),
 temperature                     DOUBLE(17),
 wind_speed_meters_per_second    DOUBLE(17),
-wind_direction_degrees          INTEGER(10),
+wind_direction_degrees          DOUBLE(17),
 updated                         TIMESTAMP
 );
 

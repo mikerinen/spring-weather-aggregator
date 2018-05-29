@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 @Data
@@ -23,9 +23,9 @@ public class WeatherData implements Serializable {
     private Double airPressure;
     private Double humidityPercentage;
     private Double windSpeedMetersPerSecond;
-    private Integer windDirectionDegrees;
+    private Double windDirectionDegrees;
     private String description;
     private String longDescription;
     private String icon;
-    private Date updated;
+    private LocalDateTime updated;
 }
