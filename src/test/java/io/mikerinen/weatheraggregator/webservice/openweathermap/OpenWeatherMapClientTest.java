@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -44,8 +45,9 @@ public class OpenWeatherMapClientTest {
     @Test
     public void testFetchWeatherData() {
         // setup
+        openWeatherMapClient.setApiKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         this.server.expect(
-                requestTo("http://samples.openweathermap.org/data/2.5/weather?q=London&appid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+                requestTo("https://api.openweathermap.org/data/2.5/weather?units=metric&q=London&appid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
                 .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
 
         // execute
@@ -55,7 +57,7 @@ public class OpenWeatherMapClientTest {
         // verify
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         OpenWeatherMapResponse body = response.getBody();
-        assertThat(body.getMainInformation().getTemperature(), is(280.32));
+        assertThat(Objects.requireNonNull(body).getMainInformation().getTemperature(), is(280.32));
         assertThat(body.getMainInformation().getHumidity(), is(81.0));
         assertThat(body.getSystem().getCountryCode(), is("GB"));
     }
@@ -63,8 +65,9 @@ public class OpenWeatherMapClientTest {
     @Test
     public void testFetchWeatherDataNotContent() {
         // setup
+        openWeatherMapClient.setApiKey("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         this.server.expect(
-                requestTo("http://samples.openweathermap.org/data/2.5/weather?q=NotFound&appid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+                requestTo("https://api.openweathermap.org/data/2.5/weather?units=metric&q=NotFound&appid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
                 .andRespond(withNoContent());
 
         // execute

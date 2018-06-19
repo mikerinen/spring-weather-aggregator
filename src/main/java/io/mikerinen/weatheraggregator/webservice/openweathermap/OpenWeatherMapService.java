@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Setter
 @Service("openWeatherMapService")
@@ -16,15 +18,18 @@ public class OpenWeatherMapService {
     @Resource(name = "openWeatherMapClient")
     private OpenWeatherMapClient openWeatherMapClient;
 
+    Clock clock = Clock.systemDefaultZone();
+
     public WeatherData getWeatherDataForLocation(String location) {
         ResponseEntity<OpenWeatherMapResponse> responseEntity = openWeatherMapClient.fetchWeatherData(location);
 
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+        Optional<OpenWeatherMapResponse> responseOptional = Optional.ofNullable(responseEntity.getBody());
 
-            OpenWeatherMapResponse response = responseEntity.getBody();
-
+        if (responseEntity.getStatusCode().is2xxSuccessful() && responseOptional.isPresent()) {
+            OpenWeatherMapResponse response = responseOptional.get();
             WeatherData weatherData = new WeatherData();
-            weatherData.setUpdated(LocalDateTime.now());
+
+            weatherData.setUpdated(LocalDateTime.now(clock));
             weatherData.setTemperature(response.getMainInformation().getTemperature());
             weatherData.setAirPressure(response.getMainInformation().getPressure());
             weatherData.setHumidityPercentage(response.getMainInformation().getHumidity());

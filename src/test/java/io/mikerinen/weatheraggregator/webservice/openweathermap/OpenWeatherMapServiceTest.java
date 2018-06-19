@@ -11,7 +11,10 @@ import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,6 +40,8 @@ public class OpenWeatherMapServiceTest {
     @Mocked
     private OpenWeatherMapClient openWeatherMapClientStub;
 
+    Clock fixedClock = Clock.fixed(Instant.parse("2000-01-01T00:00:00.00Z"), ZoneId.systemDefault());
+
     @Test
     public void testGetWeatherDataForLocation() {
         // setup
@@ -47,12 +52,13 @@ public class OpenWeatherMapServiceTest {
 
         OpenWeatherMapService openWeatherMapService = new OpenWeatherMapService();
         openWeatherMapService.setOpenWeatherMapClient(openWeatherMapClientStub);
+        openWeatherMapService.setClock(fixedClock);
 
         // execute
         WeatherData weatherData = openWeatherMapService.getWeatherDataForLocation(TEST_LOCATION);
 
         // verify
-        assertThat(weatherData.getUpdated().isBefore(LocalDateTime.now()), is(true));
+        assertThat(weatherData.getUpdated().isEqual(LocalDateTime.now(fixedClock)), is(true));
         assertThat(weatherData.getLocationName(), is(TEST_LOCATION));
         assertThat(weatherData.getAirPressure(), is(AIR_PRESSURE));
         assertThat(weatherData.getDescription(), is(MAIN_DESCRIPTION));
